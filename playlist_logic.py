@@ -10,7 +10,8 @@ DEFAULT_PROFILE = {
     "favorite_genre": "rock",
     "include_mixed": True,
 }
-
+HYPE_GENRE_KEYWORDS = ["rock", "punk", "party"]
+CHILL_TITLE_KEYWORDS = ["lofi", "ambient", "sleep"]
 
 def normalize_title(title: str) -> str:
     """Normalize a song title for comparisons."""
@@ -65,17 +66,13 @@ def classify_song(song: Song, profile: Dict[str, object]) -> str:
 
     hype_min_energy = profile.get("hype_min_energy", 7)
     chill_max_energy = profile.get("chill_max_energy", 3)
-    favorite_genre = profile.get("favorite_genre", "")
 
-    hype_keywords = ["rock", "punk", "party"]
-    chill_keywords = ["lofi", "ambient", "sleep"]
+    has_hype_genre = any(k in genre for k in HYPE_GENRE_KEYWORDS)
+    has_chill_title = any(k in title for k in CHILL_TITLE_KEYWORDS)
 
-    is_hype_keyword = any(k in genre for k in hype_keywords)
-    is_chill_keyword = any(k in title for k in chill_keywords)
-
-    if genre == favorite_genre or energy >= hype_min_energy or is_hype_keyword:
+    if energy >= hype_min_energy or has_hype_genre:
         return "Hype"
-    if energy <= chill_max_energy or is_chill_keyword:
+    if energy <= chill_max_energy or has_chill_title:
         return "Chill"
     return "Mixed"
 
